@@ -10,7 +10,7 @@ SRCS := $(shell find Sources -type f -name '*.swift')
 all: $(BINARY)
 
 $(BINARY): $(SRCS)
-     swift build -c release
+	swift build -c release
 
 build: $(BINARY)
 
