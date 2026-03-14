@@ -6,13 +6,15 @@ Prevent Apple Wireless Direct Link (awdl0) from becoming active while GeForce NO
 
 On macOS, the `awdl0` interface (Apple Wireless Direct Link) is used for AirDrop, AirPlay, and other peer-to-peer wireless features. When active, it can cause latency when swapping channels that interferes with cloud gaming services like GeForce NOW.
 
+See https://uncomplicated.systems/2026/02/08/geforcenow-macos for a bit of a write up.
+
 ## The Solution
 
 This daemon monitors for the GeForce NOW application and automatically:
 
 - **Brings down `awdl0`** when streaming starts (fullscreen detected)
 - **Allows `awdl0` back up** when streaming ends or GeForce NOW terminates
-- **Re-downs `awdl0`** if macOS re-enables it during streaming
+- **Re-downs `awdl0`** if macOS enables it during streaming
 
 ## Requirements
 
@@ -80,12 +82,7 @@ ifconfig awdl0
 
 4. **Interface monitoring**: Uses `SCDynamicStore` to watch for `awdl0` state changes—if macOS re-enables `awdl0` during a stream, the daemon brings it back down.
 
-## License
-
-This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
-
 ## Acknowledgments
 
 - Inspired by the community workarounds for GeForce NOW latency issues on macOS
 - Built with Swift using Apple's native frameworks: AppKit, CoreGraphics, SystemConfiguration
-
