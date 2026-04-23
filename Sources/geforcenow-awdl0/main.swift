@@ -24,6 +24,7 @@ extension GFNAwdl0 {
 
         @OptionGroup var options: GFNAwdl0
 
+        @MainActor
         mutating func run() async throws {
             let logLevel: Logger.Level = options.verbose ? .debug : .info
             LoggingSystem.bootstrap { label in
