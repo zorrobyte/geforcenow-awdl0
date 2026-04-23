@@ -38,6 +38,7 @@ make install
 The repository Makefile exposes the following targets:
 
 - `make build`: Build the release binary at `.build/release/geforcenow-awdl0`.
+- `make test`: Run the Swift Testing suite.
 - `make install`: Install the LaunchAgent and binary. This copies the
 	binary to `~/bin/geforcenow-awdl0`, writes the LaunchAgent to
 	`~/Library/LaunchAgents/io.github.sjparkinson.geforcenow-awdl0.plist`,

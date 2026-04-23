@@ -89,7 +89,7 @@ public struct WindowMonitor: Sendable {
         return false
     }
 
-    private static func isFullscreen(windowBounds: CGRect, displayBounds: CGRect) -> Bool {
+    static func isFullscreen(windowBounds: CGRect, displayBounds: CGRect) -> Bool {
         // Check if window bounds approximately match display bounds (within tolerance)
         let tolerance = fullscreenTolerance
         let expandedDisplay = displayBounds.insetBy(dx: -tolerance, dy: -tolerance)

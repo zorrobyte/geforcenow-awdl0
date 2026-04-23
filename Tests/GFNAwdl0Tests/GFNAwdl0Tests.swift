@@ -1,3 +1,4 @@
+import CoreGraphics
 import Testing
 @testable import GFNAwdl0Lib
 
@@ -39,6 +40,33 @@ struct WindowMonitorTests {
     @Test("Can create WindowMonitor")
     func canCreateMonitor() {
         _ = WindowMonitor(pid: 1)
+    }
+
+    @Test("Window exactly at display bounds is fullscreen")
+    func windowAtBounds() {
+        let display = CGRect(x: 0, y: 0, width: 2560, height: 1440)
+        #expect(WindowMonitor.isFullscreen(windowBounds: display, displayBounds: display))
+    }
+
+    @Test("Window slightly oversized within tolerance is fullscreen")
+    func slightlyOversized() {
+        let display = CGRect(x: 0, y: 0, width: 2560, height: 1440)
+        let window = CGRect(x: -1, y: -1, width: 2562, height: 1442)
+        #expect(WindowMonitor.isFullscreen(windowBounds: window, displayBounds: display))
+    }
+
+    @Test("Window 2px oversized is not fullscreen")
+    func tooLarge() {
+        let display = CGRect(x: 0, y: 0, width: 2560, height: 1440)
+        let window = CGRect(x: -2, y: -2, width: 2564, height: 1444)
+        #expect(!WindowMonitor.isFullscreen(windowBounds: window, displayBounds: display))
+    }
+
+    @Test("Window 2px undersized is not fullscreen")
+    func tooSmall() {
+        let display = CGRect(x: 0, y: 0, width: 2560, height: 1440)
+        let window = CGRect(x: 2, y: 2, width: 2556, height: 1436)
+        #expect(!WindowMonitor.isFullscreen(windowBounds: window, displayBounds: display))
     }
 }
 
@@ -163,6 +191,7 @@ struct InterfaceMonitorTests {
 @Suite("Daemon Tests")
 struct DaemonTests {
     @Test("Can create Daemon")
+    @MainActor
     func canCreateDaemon() throws {
         _ = try Daemon()
     }
