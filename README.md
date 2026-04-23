@@ -39,12 +39,12 @@ The repository Makefile exposes the following targets:
 
 - `make build`: Build the release binary at `.build/release/geforcenow-awdl0`.
 - `make test`: Run the Swift Testing suite.
-- `make install`: Install the LaunchAgent and binary. This copies the
-	binary to `~/bin/geforcenow-awdl0`, writes the LaunchAgent to
-	`~/Library/LaunchAgents/io.github.sjparkinson.geforcenow-awdl0.plist`,
-	and creates logs at `~/Library/Logs/geforcenow-awdl0.log`.
-- `make uninstall`: Uninstall the LaunchAgent and remove the installed binary.
-- `make run`: Run the compiled binary directly for debugging.
+- `make install`: Install the LaunchAgent and binary.
+
+  This copies the binary to `~/bin/geforcenow-awdl0`, makes it setuid root (prompts for sudo — bringing `awdl0` down via `ioctl(SIOCSIFFLAGS)` requires root), writes the LaunchAgent to `~/Library/LaunchAgents/io.github.sjparkinson.geforcenow-awdl0.plist`, and creates logs at `~/Library/Logs/geforcenow-awdl0.log`.
+
+- `make uninstall`: Uninstall the LaunchAgent and remove the installed binary (prompts for sudo to delete the root-owned binary).
+- `make run`: Run the compiled binary directly for debugging. The binary in `.build/release/` is not setuid, so use `sudo` if you want to test the interface control path.
 
 Logs are written to `~/Library/Logs/geforcenow-awdl0.log`.
 

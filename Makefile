@@ -15,12 +15,13 @@ $(BINARY): $(SRCS)
 build: $(BINARY)
 
 install: build
-	@echo "Installing geforcenow-awdl0..."
+	@echo "Installing geforcenow-awdl0 (will prompt for sudo to setuid the binary)..."
 	@mkdir -p $(HOME)/bin
 	@mkdir -p $(HOME)/Library/LaunchAgents
 	@mkdir -p $(HOME)/Library/Logs
-	@cp $(BINARY) $(TARGET_BIN)
-	@chmod 755 $(TARGET_BIN)
+	@sudo cp $(BINARY) $(TARGET_BIN)
+	@sudo chown root:wheel $(TARGET_BIN)
+	@sudo chmod 4755 $(TARGET_BIN)
 	@sed -e "s|__TARGET_BIN__|$(TARGET_BIN)|g" \
 		-e "s|__LOG_PATH__|$(HOME)/Library/Logs/geforcenow-awdl0.log|g" \
 		./LaunchAgents/io.github.sjparkinson.geforcenow-awdl0.plist > $(PLIST_TARGET)
@@ -30,10 +31,10 @@ install: build
 	@echo "Installation complete."
 
 uninstall:
-	@echo "Uninstalling geforcenow-awdl0..."
-	@launchctl bootout gui/$(UID)/$(LABEL)
+	@echo "Uninstalling geforcenow-awdl0 (will prompt for sudo to remove the setuid binary)..."
+	@launchctl bootout gui/$(UID)/$(LABEL) 2>/dev/null || true
 	@rm -f $(PLIST_TARGET)
-	@rm -f $(TARGET_BIN)
+	@sudo rm -f $(TARGET_BIN)
 	@echo "Uninstallation complete."
 
 run:

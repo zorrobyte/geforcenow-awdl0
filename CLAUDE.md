@@ -12,8 +12,12 @@ Build, test, and run go through the `Makefile` (which wraps SwiftPM):
 
 - `make build` — release build to `.build/release/geforcenow-awdl0`
 - `make test` / `swift test` — runs the Swift Testing suite in `Tests/GFNAwdl0Tests`
-- `make run` — runs the release binary with `--verbose`; **fails at the `ioctl`/`SIOCSIFFLAGS` step without root** since bringing `awdl0` down requires root. For real testing use `sudo .build/release/geforcenow-awdl0 --verbose`, or `make install` to run it under launchd.
-- `make install` / `make uninstall` — installs the binary to `~/bin`, templates `LaunchAgents/*.plist` into `~/Library/LaunchAgents`, and bootstraps/boots out the user LaunchAgent. Logs go to `~/Library/Logs/geforcenow-awdl0.log`.
+- `make run` — runs `.build/release/geforcenow-awdl0 --verbose`. That binary is **not** setuid (only the installed copy at `~/bin/geforcenow-awdl0` is), so `ioctl(SIOCSIFFLAGS)` fails with EPERM. For real testing use `sudo .build/release/geforcenow-awdl0 --verbose`, or `make install` to run it under launchd.
+- `make install` / `make uninstall` — installs the binary to `~/bin` **setuid root** (prompts for sudo), templates `LaunchAgents/*.plist` into `~/Library/LaunchAgents`, and bootstraps/boots out the user LaunchAgent. Logs go to `~/Library/Logs/geforcenow-awdl0.log`. Uninstall also needs sudo to remove the root-owned binary.
+
+## Privilege model
+
+The daemon runs as a **user LaunchAgent** (in the console user's GUI session, needed for NSWorkspace/CGWindowList) but the binary is **setuid root** so it can call `ioctl(SIOCSIFFLAGS)` to flip `awdl0`. That's why `make install` needs sudo — it `chown root:wheel` + `chmod 4755`s `~/bin/geforcenow-awdl0`. The whole process runs as root; there's no `seteuid` drop/re-elevate dance. If you add functionality that doesn't need root, consider dropping effective UID at startup.
 
 Run a single test by name with `swift test --filter <SuiteName>/<testName>` (e.g. `swift test --filter InterfaceControllerTests/siocgifflags`).
 
